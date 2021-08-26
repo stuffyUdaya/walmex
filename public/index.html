@@ -1,11 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <style>
+      #demographic {
+        padding: 1rem;
+        width: 50%;
+      }
+      #users {
+        width: 50%;
+      }
+      div {
+        padding: 1rem;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Walmex Challenge</title>
-</head>
-<body>
-    Fill me in :)
-</body>
+  </head>
+  <body>
+    <div class="container">
+      <h4>All Users</h4>
+      <p>Users and the age</p>
+
+      <div id="users"></div>
+      <h4>
+        Age Demographic of Users With <span id="item-selected"> ________ </span>
+      </h4>
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-primary dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Item
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" onclick="getDemographic('carrot')">carrot</a>
+          <a class="dropdown-item" onclick="getDemographic('apple')">apple</a>
+          <a class="dropdown-item" onclick="getDemographic('grapes')">grapes</a>
+          <a class="dropdown-item" onclick="getDemographic('cake')">cake</a>
+          <a class="dropdown-item" onclick="getDemographic('tv')">tv</a>
+          <a class="dropdown-item" onclick="getDemographic('crackers')"
+            >crackers</a
+          >
+          <a class="dropdown-item" onclick="getDemographic('chips')">chips</a>
+          <a class="dropdown-item" onclick="getDemographic('ham')">ham</a>
+        </div>
+      </div>
+      <br />
+      <div id="demographic"></div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+      integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+      integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      getUsers();
+
+      async function getDemographic(item) {
+        const response = await fetch(`/users/age?lookup=${item}`);
+        let users = await response.text();
+        users = JSON.parse(users);
+
+        if (users.length > 0) {
+          let content = `
+            <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Age</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+            `;
+          for (let i = 0; i < users.length; i++) {
+            content += `
+                <tr>
+                    <td>${users[i].age}</td>
+                    <td>${users[i].count}</td>
+                    </tr>
+                    `;
+            if (i == users.length - 1) {
+              content += `</tbody> </table>`;
+            }
+          }
+          document.getElementById("demographic").innerHTML = content;
+          document.getElementById("item-selected").innerHTML = `<u>${item}</u>`;
+        }
+      }
+
+      async function getUsers() {
+        const response = await fetch("/users");
+        let users = await response.text();
+        users = JSON.parse(users);
+        let content = `
+            <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Age</th>
+              </tr>
+            </thead>
+            <tbody>
+            `;
+        for (let i = 0; i < users.length; i++) {
+          content += `
+                <tr>
+                    <td>${users[i].username}</td>
+                    <td>${users[i].age}</td>
+                    </tr>
+                    `;
+          if (i == users.length - 1) {
+            content += `</tbody> </table>`;
+          }
+        }
+        document.getElementById("users").innerHTML = content;
+      }
+    </script>
+  </body>
 </html>

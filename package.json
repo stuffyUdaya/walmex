@@ -4,12 +4,14 @@
   "description": "coding challenge",
   "main": "./src/index.js",
   "scripts": {
-    "start": "node ./src/index.js"
+    "start": "nodemon ./src/index.js -e ejs,js,css,html,jpg,png,scss"
   },
   "author": "walmex-team",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.12",
+    "serve-favicon": "^2.5.0"
   }
 }
